@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.VectorAssembler","timestamp":1729827179268,"sparkVersion":"3.4.3","uid":"VectorAssembler_c1bd4deb0fdc","paramMap":{"outputCol":"features","inputCols":["Accessibility","Surveillance","Crime Count"]},"defaultParamMap":{"outputCol":"VectorAssembler_c1bd4deb0fdc__output","handleInvalid":"error"}}

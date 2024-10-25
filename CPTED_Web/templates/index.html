@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리은행 FISA - 아파트 범죄 위험도 예측</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f9fe;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 상단 네비게이션 스타일 */
+        .navbar {
+            background-color: #005bac;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .navbar img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        /* 탭 스타일 */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            flex: 1;
+            color: #005bac;
+            transition: background-color 0.3s;
+        }
+
+        .tab:hover {
+            background-color: #ddd;
+        }
+
+        .tab.active {
+            background-color: #005bac;
+            color: white;
+        }
+
+        /* 메인 컨테이너 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* 폼 스타일 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #005bac;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cdd7e5;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #005bac;
+            color: white;
+            padding: 12px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #004080;
+        }
+
+        /* 정보 리스트 스타일 */
+        .info-list {
+            margin-top: 40px;
+        }
+
+        .info-item {
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-item img {
+            max-width: 80px;
+        }
+
+        .info-details {
+            flex: 1;
+            margin-left: 20px;
+        }
+
+        .info-details p {
+            margin: 5px 0;
+        }
+
+        .info-details p a {
+            color: #005bac;
+            text-decoration: none;
+        }
+
+        .phone-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: green;
+        }
+
+        /* 로딩 및 결과 */
+        #result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #005bac;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<!-- 상단 네비게이션 -->
+<div class="navbar">
+    <img src="{{ url_for('static', filename='images/Woori_financial_group.jpg') }}" alt="우리은행 로고">
+</div>
+
+    <!-- 탭 섹션 -->
+    <div class="tabs">
+        <div class="tab active">생명보험</div>
+        <div class="tab">손해보험</div>
+    </div>
+
+    <div class="container">
+        <h1>아파트 범죄 위험도 예측</h1>
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="Accessibility">접근성 (1-5):</label>
+                <input type="number" id="Accessibility" name="Accessibility" 
+                       min="1" max="5" step="0.1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Surveillance">감시성 (1-5):</label>
+                <input type="number" id="Surveillance" name="Surveillance" 
+                       min="1" max="5" step="0.1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="CrimeCount">범죄 발생 건수:</label>
+                <input type="number" id="CrimeCount" name="CrimeCount" 
+                       min="0" required>
+            </div>
+            
+            <button type="submit">위험도 예측하기</button>
+        </form>
+        
+        <div id="loading" class="loading">
+            예측 중입니다...
+        </div>
+        
+        <div id="result"></div>
+
+        <!-- 정보 리스트 -->
+        <div class="info-list">
+            <div class="info-item">
+                <img src="{{ url_for('static', filename='images/Samsung_fire.jpg') }}" alt="삼성생명">
+                <div class="info-details">
+                    <p>삼성생명</p>
+                    <p>서울특별시 서초구 서초대로 74길 11</p>
+                    <p><a href="http://www.samsunglife.com">http://www.samsunglife.com</a></p>
+                </div>
+                <div class="phone-number">1588-3114</div>
+            </div>
+
+            <div class="info-item">
+                <img src="{{ url_for('static', filename='images/DB_finance.jpg') }}" alt="DB생명">
+                <div class="info-details">
+                    <p>DB생명</p>
+                    <p>서울특별시 강남구 테헤란로 432</p>
+                    <p><a href="http://www.idblife.com">http://www.idblife.com</a></p>
+                </div>
+                <div class="phone-number">1588-3131</div>
+            </div>
+
+            <div class="info-item">
+                <img src="{{ url_for('static', filename='images/ABL.png') }}" alt="ABL생명">
+                <div class="info-details">
+                    <p>ABL생명</p>
+                    <p>서울특별시 영등포구 의사당대로 147</p>
+                    <p><a href="http://www.abllife.co.kr">http://www.abllife.co.kr</a></p>
+                </div>
+                <div class="phone-number">1588-6500</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            
+            try {
+                const formData = new FormData(this);
+                
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                result.style.display = 'block';
+                if (data.success) {
+                    result.className = 'success';
+                    result.textContent = `예측된 위험도 점수: ${data.predicted_risk_score}`;
+                } else {
+                    result.className = 'error';
+                    result.textContent = data.error;
+                }
+            } catch (error) {
+                result.style.display = 'block';
+                result.className = 'error';
+                result.textContent = '서버와의 통신 중 오류가 발생했습니다.';
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
